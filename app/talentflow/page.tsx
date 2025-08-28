@@ -7,7 +7,7 @@ export default function TalentFlowPage() {
             title=""
             description="Enter your information to get started with TalentFlow"
             buttonText="Continue to TalentFlow"
-            redirectUrl="https://clickchain.ai/dev/talentacquisition/talentflow"
+            redirectUrl="https://clickchain.ai/talentacquisition/talentflow"
         />
     )
 } 

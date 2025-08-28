@@ -7,7 +7,7 @@ export default function PayFlowPage() {
             title=""
             description="Enter your information to get started with PayFlow"
             buttonText="Continue to PayFlow"
-            redirectUrl="https://clickchain.ai/dev/accounting/payflow"
+            redirectUrl="https://clickchain.ai/accounting/payflow"
         />
     )
 } 

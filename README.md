@@ -22,12 +22,12 @@ The application supports the following routes:
 ### TalentFlow Route
 - **URL**: `/talentflow`
 - **Flow Type**: `talentflow`
-- **Redirect**: `https://clickchain.ai/dev/talentacquisition/talentflow`
+- **Redirect**: `https://clickchain.ai/talentacquisition/talentflow`
 
 ### PayFlow Route
 - **URL**: `/payflow`
 - **Flow Type**: `payflow`
-- **Redirect**: `https://clickchain.ai/dev/accounting/payflow`
+- **Redirect**: `https://clickchain.ai/accounting/payflow`
 
 ## Form Fields
 
