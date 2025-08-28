@@ -1,181 +1,90 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/hooks/use-toast"
-
-interface FormData {
-  firstName: string
-  lastName: string
-  email: string
-}
-
-interface FormErrors {
-  firstName?: string
-  lastName?: string
-  email?: string
-}
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 
 export default function SignUpPage() {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
-
-    // First name validation
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required"
-    } else if (formData.firstName.trim().length < 2) {
-      newErrors.firstName = "First name must be at least 2 characters"
-    }
-
-    // Last name validation
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required"
-    } else if (formData.lastName.trim().length < 2) {
-      newErrors.lastName = "Last name must be at least 2 characters"
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required"
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) {
-      toast({
-        title: "Validation Error",
-        description: "Please fix the errors below",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      const response = await fetch("/api/submit-signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        toast({
-          title: "Success!",
-          description: "Your information has been submitted successfully",
-        })
-
-        // Redirect to the specified URL
-        window.location.href = "https://clickchain.ai/talentacquisition/talentflow/"
-      } else {
-        throw new Error("Failed to submit form")
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit your information. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
+  const handleCardClick = (flowType: string) => {
+    if (flowType === "talentflow") {
+      window.location.href = "/talentflow"
+    } else if (flowType === "payflow") {
+      window.location.href = "/payflow"
     }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#111A26" }}>
-      <Card className="w-full max-w-md" style={{ backgroundColor: "#1F2937" }}>
-        <CardHeader className="text-center">
-          <CardDescription className="text-gray-300">Enter your information to get started</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName" className="text-white">
-                First Name
-              </Label>
-              <Input
-                id="firstName"
-                type="text"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-blue-500"
-                placeholder="Enter your first name"
-              />
-              {errors.firstName && <p className="text-sm text-red-400">{errors.firstName}</p>}
-            </div>
+      <div className="w-full max-w-4xl">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Choose Your Journey</h1>
+          <p className="text-gray-300">Select the flow that best fits your needs</p>
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="lastName" className="text-white">
-                Last Name
-              </Label>
-              <Input
-                id="lastName"
-                type="text"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange("lastName", e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-blue-500"
-                placeholder="Enter your last name"
-              />
-              {errors.lastName && <p className="text-sm text-red-400">{errors.lastName}</p>}
-            </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* TalentFlow Card */}
+          <Card
+            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            style={{ backgroundColor: "#1F2937" }}
+            onClick={() => handleCardClick("talentflow")}
+          >
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <CardTitle className="text-white text-xl">TalentFlow</CardTitle>
+              <CardDescription className="text-gray-300">
+                Hire with confidence, aligned to your culture
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center pt-0">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleCardClick("talentflow")
+                }}
+              >
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus:border-blue-500"
-                placeholder="Enter your email address"
-              />
-              {errors.email && <p className="text-sm text-red-400">{errors.email}</p>}
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Continue"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          {/* PayFlow Card */}
+          <Card
+            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            style={{ backgroundColor: "#1F2937" }}
+            onClick={() => handleCardClick("payflow")}
+          >
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <CardTitle className="text-white text-xl">PayFlow</CardTitle>
+              <CardDescription className="text-gray-300">
+                Take the pain out of payroll and invoices
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center pt-0">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleCardClick("payflow")
+                }}
+              >
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

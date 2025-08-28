@@ -6,8 +6,8 @@ import { google } from "googleapis"
 export async function POST(request: NextRequest) {
   try {
     console.log("[v1] API route called")
-    const { firstName, lastName, email } = await request.json()
-    console.log("[v1] Received data:", { firstName, lastName, email })
+    const { firstName, lastName, email, flowType } = await request.json()
+    console.log("[v1] Received data:", { firstName, lastName, email, flowType })
 
     // Validate required fields
     if (!firstName || !lastName || !email) {
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Add data to Google Sheet
     const spreadsheetId = GOOGLE_SHEET_ID
-    const range = "Sheet1!A:D" // Includes timestamp column
+    const range = "Sheet1!A:E" // Includes flowType and timestamp columns
 
     console.log("[v1] Attempting to append to sheet:", spreadsheetId)
     await sheets.spreadsheets.values.append({
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       range,
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[firstName, lastName, email, new Date().toISOString()]],
+        values: [[firstName, lastName, email, flowType || "unknown", new Date().toISOString()]],
       },
     })
 
