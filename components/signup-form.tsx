@@ -120,17 +120,7 @@ export default function SignupForm({ flowType, title, description, buttonText, r
 
                 // Add a small delay before redirect to show the loading state
                 setTimeout(() => {
-                    // Update parent window URL if in iframe, otherwise redirect normally
-                    if (window.parent !== window) {
-                        // We're in an iframe - update parent URL
-                        window.parent.postMessage({
-                            type: 'REDIRECT',
-                            url: redirectUrl
-                        }, '*')
-                    } else {
-                        // We're not in an iframe - redirect normally
-                        window.location.href = redirectUrl
-                    }
+                    window.location.href = redirectUrl
                 }, 1500)
             } else {
                 throw new Error("Failed to submit form")
