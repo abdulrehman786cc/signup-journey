@@ -29,6 +29,18 @@ interface SignupFormProps {
     redirectUrl: string
 }
 
+// Helper function to get flow name for display
+const getFlowDisplayName = (flowType: string): string => {
+    switch (flowType) {
+        case "talentflow":
+            return "TalentFlow"
+        case "payflow":
+            return "PayFlow"
+        default:
+            return "ClickChain"
+    }
+}
+
 export default function SignupForm({ flowType, title, description, buttonText, redirectUrl }: SignupFormProps) {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
@@ -106,8 +118,10 @@ export default function SignupForm({ flowType, title, description, buttonText, r
                     description: "Your information has been submitted successfully",
                 })
 
-                // Redirect to the specified URL
-                window.location.href = redirectUrl
+                // Add a small delay before redirect to show the loading state
+                setTimeout(() => {
+                    window.location.href = redirectUrl
+                }, 1500)
             } else {
                 throw new Error("Failed to submit form")
             }
