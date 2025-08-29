@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -50,7 +49,21 @@ export default function SignupForm({ flowType, title, description, buttonText, r
     })
     const [errors, setErrors] = useState<FormErrors>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [hasSubmittedBefore, setHasSubmittedBefore] = useState(false)
     const { toast } = useToast()
+
+    // Check if user has submitted this flow before
+    React.useEffect(() => {
+        try {
+            const storageKey = `signup_${flowType}_submitted`
+            const hasSubmitted = localStorage.getItem(storageKey)
+            if (hasSubmitted) {
+                setHasSubmittedBefore(true)
+            }
+        } catch (error) {
+            console.log('Could not access localStorage:', error)
+        }
+    }, [flowType])
 
     const validateForm = (): boolean => {
         const newErrors: FormErrors = {}
@@ -113,6 +126,14 @@ export default function SignupForm({ flowType, title, description, buttonText, r
             })
 
             if (response.ok) {
+                // Save to localStorage that user has submitted this flow
+                try {
+                    const storageKey = `signup_${flowType}_submitted`
+                    localStorage.setItem(storageKey, 'true')
+                } catch (error) {
+                    console.log('Could not save to localStorage:', error)
+                }
+
                 toast({
                     title: "Success!",
                     description: "Your information has been submitted successfully",
@@ -134,6 +155,19 @@ export default function SignupForm({ flowType, title, description, buttonText, r
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    const handleSkip = () => {
+        // Save to localStorage that user has skipped this flow
+        try {
+            const storageKey = `signup_${flowType}_submitted`
+            localStorage.setItem(storageKey, 'true')
+        } catch (error) {
+            console.log('Could not save to localStorage:', error)
+        }
+
+        // Redirect immediately
+        window.location.href = redirectUrl
     }
 
     return (
@@ -198,6 +232,20 @@ export default function SignupForm({ flowType, title, description, buttonText, r
                             {isSubmitting ? "Submitting..." : buttonText}
                         </Button>
                     </form>
+
+                    {/* Skip option for returning users */}
+                    {hasSubmittedBefore && (
+                        <div className="mt-4 text-center">
+                            <button
+                                type="button"
+                                className="text-slate-400 text-xs hover:text-blue-300 underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleSkip}
+                                disabled={isSubmitting}
+                            >
+                                Skip
+                            </button>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>
